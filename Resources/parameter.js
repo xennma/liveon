@@ -1,0 +1,1 @@
+exports.NAME_PAGE = 'Live On Stage';

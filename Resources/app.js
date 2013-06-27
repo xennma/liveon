@@ -1,44 +1,69 @@
-/*
- * Single Window Application Template:
- * A basic starting point for your application.  Mostly a blank canvas.
- * 
- * In app.js, we generally take care of a few things:
- * - Bootstrap the application with any data we need
- * - Check for dependencies like device type, platform version or network connection
- * - Require and open our top-level UI component
- *  
- */
+Titanium.UI.setBackgroundColor('#fff');
+Titanium.include('feed.js','campaigns.js','artists.js', 'calendar.js','login.js');
+// create tab group
+var tabGroup = Titanium.UI.createTabGroup();
+ 
+// create base UI tabs and  windows
 
-//bootstrap and check dependencies
-if (Ti.version < 1.8 ) {
-	alert('Sorry - this application template requires Titanium Mobile SDK 1.8 or later');	  	
+var iconFeed = 'KS_nav_ui.png';
+var iconCampaigns = 'KS_nav_ui.png';
+var iconArtists = 'KS_nav_ui.png';
+var iconCalendar = 'KS_nav_ui.png';
+var iconLogin = 'KS_nav_ui.png';
+
+if(Ti.Platform.osname != 'android')
+{
+	iconFeed = Ti.UI.iPhone.SystemIcon.MOST_VIEWED;
+	iconArtists = Ti.UI.iPhone.SystemIcon.FAVORITES;
+	iconCampaigns = Ti.UI.iPhone.SystemIcon.HISTORY;
 }
 
-// This is a single context application with multiple windows in a stack
-(function() {
-	//render appropriate components based on the platform and form factor
-	var osname = Ti.Platform.osname,
-		version = Ti.Platform.version,
-		height = Ti.Platform.displayCaps.platformHeight,
-		width = Ti.Platform.displayCaps.platformWidth;
-	
-	//considering tablet to have one dimension over 900px - this is imperfect, so you should feel free to decide
-	//yourself what you consider a tablet form factor for android
-	var isTablet = osname === 'ipad' || (osname === 'android' && (width > 899 || height > 899));
-	
-	var Window;
-	if (isTablet) {
-		Window = require('ui/tablet/ApplicationWindow');
-	}
-	else {
-		// Android uses platform-specific properties to create windows.
-		// All other platforms follow a similar UI pattern.
-		if (osname === 'android') {
-			Window = require('ui/handheld/android/ApplicationWindow');
-		}
-		else {
-			Window = require('ui/handheld/ApplicationWindow');
-		}
-	}
-	new Window().open();
-})();
+var feed = feedWin();
+var tab1 = Titanium.UI.createTab({  
+    title:'Feed',
+    window: feed, 
+    icon: iconFeed,
+});
+
+var campaigns = campaignsWin();
+var tab2 = Titanium.UI.createTab({  
+    title:'Campaigns',
+    window: campaigns,
+    icon: iconCampaigns,
+});
+ 
+var artists = artistsWin();
+var tab3 = Titanium.UI.createTab({  
+    title:'Artists',
+    window: artists,
+    icon: iconArtists,
+}); 
+ 
+  
+var calendar = calendarWin();
+
+var tab4 = Titanium.UI.createTab({  
+    title:'Calendar',
+    window: calendar,
+    icon: iconCalendar,
+}); 
+ 
+var login = loginWin();
+
+var tab5 = Titanium.UI.createTab({  
+    title:'Login',
+    window: login,
+    icon: iconLogin,
+});  
+ 
+ 
+ 
+//  add tab
+ 
+tabGroup.addTab(tab1);  
+tabGroup.addTab(tab2);  
+tabGroup.addTab(tab3);  
+tabGroup.addTab(tab4);  
+tabGroup.addTab(tab5); 
+// open tab group
+tabGroup.open();
