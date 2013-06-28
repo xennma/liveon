@@ -44,7 +44,7 @@ var feedWin = function() {
 		top: '35dp',
 		separatorColor: "#fff",
 	});
-	var table = getDataFeed(loading,parameter,table,pageHome,pageHome);
+	var table = getDataFeed(loading,parameter,table,pageHome,pageHome,0,0,0);
 	var style;
 
 	var valueLabel = Ti.UI.createLabel({color:'#000000', text:"Search", font:{ fontWeight:'bold'}, left:'10dp',
@@ -59,6 +59,22 @@ var feedWin = function() {
 	view1.add(valueLabel1);
 	view2.add(valueLabel2);
 	view3.add(valueLabel3);
+	
+	view.addEventListener('click',function(){
+		table = getDataFeed(loading,parameter,table,pageHome, pageHome, 0, 0, 0);
+	});
+	view1.addEventListener('click',function(){
+		table = getDataFeed(loading,parameter,table,pageHome, pageHome, 1, 0, 0);
+	});
+	
+	view2.addEventListener('click',function(){
+		table = getDataFeed(loading,parameter,table,pageHome, pageHome, 0, 1, 0);
+	});
+	
+	view3.addEventListener('click',function(){
+		table = getDataFeed(loading,parameter,table,pageHome, pageHome, 0, 0, 1);
+	});
+	
 	win.add(view);	
 	win.add(view1);
 	win.add(view2);	
@@ -67,7 +83,7 @@ var feedWin = function() {
 	return win;	
 }
 
-function getDataFeed(loading,parameter,table,offsetHome, pageHome)
+function getDataFeed(loading,parameter,table,offsetHome, pageHome,upcoming, live, campaigns)
 {
 	
 	var tableData = [];
@@ -143,19 +159,23 @@ function getDataFeed(loading,parameter,table,offsetHome, pageHome)
 		        touchEnabled:false,
 		        link: link,
 		        });
-		        
-	        	var dateLabel = Ti.UI.createLabel({
-		        text: responses[i].startdate,
-		        font:{
-		            fontSize:'12dp',
-		        },
-		        height:'auto',
-		        left:'110dp',
-		        top:'60dp',
-		        color:'#717777',
-		        touchEnabled:false,
-		        link: link,
-		        });
+		        if(responses[i].check_date == 'date')
+		        {
+		        	var dateLabel = Ti.UI.createLabel({
+		        	text: responses[i].startdate,
+		       		font:{
+		           		fontSize:'12dp',
+		        	},
+		        	height:'auto',
+		        	left:'110dp',
+		        	top:'60dp',
+		        	color:'#717777',
+		        	touchEnabled:false,
+		        	link: link,
+		        	});
+		        	row.add(dateLabel);  	
+		        }
+	        	
 		        var imageLink = parameter.DOMAIN + parameter.IMAGE_EVENT_DEFAULT;
 		        if(responses[i].video_thumb != null)
 		        {
@@ -199,8 +219,7 @@ function getDataFeed(loading,parameter,table,offsetHome, pageHome)
 	        	row.add(image);
 	        	row.add(imageGuest);
 		        row.add(nameLabel);
-		        row.add(userLabel); 
-		        row.add(dateLabel);  		        
+		        row.add(userLabel); 		        	        
 		        row.add(guestLabel); 
 			 }
 			      
@@ -235,20 +254,25 @@ function getDataFeed(loading,parameter,table,offsetHome, pageHome)
 	    button.addEventListener('click', function(){
 			pageHome = pageHome + 1;
 			var offset = pageHome * parameter.LIMIT;
-			table = getDataFeed(loading,parameter,table,offset, pageHome);			
+			table = getDataFeed(loading,parameter,table,offset, pageHome, upcoming, live, campaigns);			
 		});
 
 		buttonBack.addEventListener('click', function(){
 			pageHome = 0;			
-			table = getDataFeed(loading,parameter,table,pageHome, pageHome);			
+			table = getDataFeed(loading,parameter,table,pageHome, pageHome, upcoming, live, campaigns);			
 		}); 
 		loading.hide();	
 	};
 	client.onerror = function(e){alert('Transmission error: ' + e.error);};
+
 	var params = {
         offset : offsetHome,
         limit: parameter.LIMIT,
         top: parameter.TOP_LIMIT,
+        upcoming: upcoming,
+        live: live,
+        campaigns: campaigns,
+        tc: parameter.USER_MOBILE.toString(),
     };
     table.addEventListener('click', function(e){
 		alert(e.source.link);

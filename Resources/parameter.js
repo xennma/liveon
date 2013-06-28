@@ -6,3 +6,6 @@ exports.URL_UPCOMING = 'index.php?option=com_mobile&task=events';
 exports.LIMIT = 10;
 exports.TOP_LIMIT = 50;
 exports.IMAGE_EVENT_DEFAULT='components/com_community/assets/event.png'
+exports.USER = 'mobile';
+exports.PASS = '123456';
+exports.USER_MOBILE = Ti.Utils.base64encode(exports.USER + '-' + exports.PASS);
